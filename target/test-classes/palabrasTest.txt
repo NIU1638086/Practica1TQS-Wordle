@@ -1,0 +1,5 @@
+carta
+perro
+silla
+coche
+raton
