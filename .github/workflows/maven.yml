@@ -1,4 +1,4 @@
-name: Java CI amb Maven
+name: Java CI amb Maven i Qualitat de Codi
 
 on:
   push:
@@ -7,23 +7,57 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
+  build-and-test:
     runs-on: ubuntu-latest
     
     steps:
-    - uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v3
     
     - name: Set up JDK 17
       uses: actions/setup-java@v3
       with:
         java-version: '17'
         distribution: 'temurin'
-        
+        cache: maven
+    
+    # Compilar el projecte
     - name: Build with Maven
-      run: mvn -B package --file pom.xml
-      
+      run: mvn -B clean compile --file pom.xml
+    
+    # Executar tests
     - name: Run tests
       run: mvn test
-      
-    - name: Generate coverage report
+    
+    # Generar informe de cobertura
+    - name: Generate JaCoCo coverage report
       run: mvn jacoco:report
+    
+    # Comprovar cobertura mínima (opcional)
+    - name: Check code coverage
+      run: mvn jacoco:check
+      continue-on-error: false
+    
+  code-quality:
+    runs-on: ubuntu-latest
+    needs: build-and-test
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+    
+    # Comprovar estil de codi amb Checkstyle
+    - name: Run Checkstyle
+      run: mvn checkstyle:check
+      continue-on-error: false
+    
+    # Anàlisi estàtica amb SpotBugs
+    - name: Run SpotBugs
+      run: mvn spotbugs:check
+      continue-on-error: false
