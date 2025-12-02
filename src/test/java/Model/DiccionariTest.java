@@ -8,27 +8,40 @@ class DiccionariTest {
 
 	@Test
 	void testDiccionari() {
-		fail("Not yet implemented");
+		Diccionari dic = new Diccionari("palabrasTest.txt");
+		assertEquals(4, dic.getNombreParaules());
+		
+		assertThrows(IllegalStateException.class, () -> {
+	        new Diccionari("no_existeix.txt");
+	    });
+		
 	}
 
 	@Test
 	void testExisteix() {
-		fail("Not yet implemented");
+		Diccionari dic = new Diccionari("palabrasTest.txt");
+		assertTrue(dic.existeix("perro")); //correcte
+		assertTrue(dic.existeix("PERRO")); //correcte
+		assertFalse(dic.existeix("gatos")); //no esta al .txt
+		assertFalse(dic.existeix("zzzzz")); //no esta al .txt
+		assertFalse(dic.existeix("12345")); //son numeros no lletres
+		assertFalse(dic.existeix("gat")); //menys de 5 lletres
+		assertFalse(dic.existeix("ordenador")); //mes de 5 lletres
+		assertFalse(dic.existeix(null));
 	}
 
 	@Test
 	void testGetRandomWord() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	void testGetParaules() {
-		fail("Not yet implemented");
+		Diccionari dic = new Diccionari("palabrasTest.txt");
+		String p = dic.getRandomWord();
+		assertEquals(5, p.length());
+		assertTrue(dic.existeix(p));
 	}
 
 	@Test
 	void testGetNombreParaules() {
-		fail("Not yet implemented");
+		Diccionari dic = new Diccionari("palabrasTest.txt");
+	    assertEquals(4, dic.getNombreParaules());
 	}
 
 }
