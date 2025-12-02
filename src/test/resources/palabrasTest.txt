@@ -1,0 +1,4 @@
+perro
+coche
+amigo
+lagos
