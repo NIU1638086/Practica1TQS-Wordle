@@ -41,7 +41,7 @@ class DiccionariTest {
 	@Test
 	void testGetNombreParaules() {
 		Diccionari dic = new Diccionari("palabrasTest.txt");
-	    assertEquals(4, dic.getNombreParaules()); //a
+	    assertEquals(4, dic.getNombreParaules()); 
 	}
 
 }
