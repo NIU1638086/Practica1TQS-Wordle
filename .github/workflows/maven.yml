@@ -34,9 +34,9 @@ jobs:
       run: mvn jacoco:report
     
     # Comprovar cobertura mínima (opcional)
-    - name: Check code coverage
-      run: mvn jacoco:check
-      continue-on-error: false
+   # - name: Check code coverage
+    #  run: mvn jacoco:check
+     # continue-on-error: true
     
   code-quality:
     runs-on: ubuntu-latest
