@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
 class ResultatIntentTest {
+	
+	/*
 
 	@Test
 	void testResultatIntent() {
@@ -35,5 +37,7 @@ class ResultatIntentTest {
 	void testEqualsObject() {
 		fail("Not yet implemented");
 	}
+	
+	*/
 
 }

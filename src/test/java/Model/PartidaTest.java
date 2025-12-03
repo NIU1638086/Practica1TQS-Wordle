@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 
 class PartidaTest {
 
+	/*
 	@Test
 	void testPartidaParaulaSecreta() {
 		fail("Not yet implemented");
@@ -56,4 +57,6 @@ class PartidaTest {
 		fail("Not yet implemented");
 	}
 
+*/
 }
+
