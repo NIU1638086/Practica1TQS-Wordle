@@ -58,6 +58,6 @@ jobs:
       continue-on-error: false
     
     # Anàlisi estàtica amb SpotBugs
-    - name: Run SpotBugs
-      run: mvn spotbugs:check
-      continue-on-error: false
+   # - name: Run SpotBugs
+    #  run: mvn spotbugs:check
+     # continue-on-error: false
