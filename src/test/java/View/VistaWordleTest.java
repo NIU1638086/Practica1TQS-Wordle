@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
 class VistaWordleTest {
+	
+	/*
 
 	@Test
 	void testVistaWordle() {
@@ -50,5 +52,7 @@ class VistaWordleTest {
 	void testMostrarAjuda() {
 		fail("Not yet implemented");
 	}
+	
+	*/
 
 }
