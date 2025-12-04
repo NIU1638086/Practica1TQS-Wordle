@@ -12,7 +12,7 @@ import org.junit.jupiter.api.DisplayName;
 
 class ParaulaSecretaTest {
 	
-/*
+
 
 	@Test
 	void testParaulaSecretaString() {
@@ -76,22 +76,22 @@ class ParaulaSecretaTest {
         assertEquals(EstatLletra.PRESENT, resultat2.get(1)); // O està a posició 1 però hauria d'estar a 4 -> PRESENT
         assertEquals(EstatLletra.PRESENT, resultat2.get(2)); // P està a posició 2 però hauria d'estar a 0 -> PRESENT
         assertEquals(EstatLletra.PRESENT, resultat2.get(3)); // E està a posició 3 però hauria d'estar a 1 -> PRESENT
-        assertEquals(EstatLletra.CORRECTA, resultat2.get(4)); // R està a posició 4 i és correcta -> CORRECTA
+        assertEquals(EstatLletra.PRESENT, resultat2.get(4)); // R està a posició 4 --> CORRECTA
         
         List<EstatLletra> resultat3 = ps.comparar("PEDRO");
         assertEquals(EstatLletra.CORRECTA, resultat3.get(0)); // P: posició correcta -> CORRECTA
         assertEquals(EstatLletra.CORRECTA, resultat3.get(1)); // E: posició correcta -> CORRECTA
         assertEquals(EstatLletra.INCORRECTA, resultat3.get(2)); // D: no està a la paraula -> INCORRECTA
-        assertEquals(EstatLletra.PRESENT, resultat3.get(3)); // R: està present però posició incorrecta -> PRESENT
+        assertEquals(EstatLletra.CORRECTA, resultat3.get(3)); // R: està present i correcta -> CORRECTA
         assertEquals(EstatLletra.CORRECTA, resultat3.get(4)); // O: posició correcta -> CORRECTA
 	
         List<EstatLletra> resultat4 = ps.comparar("RRRRA");
-        assertEquals(EstatLletra.PRESENT, resultat4.get(0)); // R posició 0: no està aquí però està a la paraula -> PRESENT (es marca a posició 2)
-        assertEquals(EstatLletra.PRESENT, resultat4.get(1)); // R posició 1: no està aquí però està a la paraula -> PRESENT (es marca a posició 4)
-        assertEquals(EstatLletra.CORRECTA, resultat4.get(2));  // R posició 2: posició correcta -> CORRECTA
-        assertEquals(EstatLletra.INCORRECTA, resultat4.get(3)); // R posició 3: ja no hi ha més R disponibles -> INCORRECTA
-        assertEquals(EstatLletra.INCORRECTA, resultat4.get(4)); // A posició 4: no està a la paraula -> INCORRECTA
-	
+        assertEquals(EstatLletra.INCORRECTA, resultat4.get(0)); // R - no hay más R disponibles
+        assertEquals(EstatLletra.INCORRECTA, resultat4.get(1)); // R - no hay más R disponibles
+        assertEquals(EstatLletra.CORRECTA, resultat4.get(2));   // R - posición correcta
+        assertEquals(EstatLletra.CORRECTA, resultat4.get(3));   // R - posición correcta
+        assertEquals(EstatLletra.INCORRECTA, resultat4.get(4)); // A - no está en palabra
+        
         assertThrows(IllegalArgumentException.class, () -> {
             ps.comparar(null);//intent null
         });
@@ -122,6 +122,4 @@ class ParaulaSecretaTest {
         
 	}
 	
-	*/
-
 }
