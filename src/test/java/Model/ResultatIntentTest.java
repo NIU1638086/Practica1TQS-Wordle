@@ -165,7 +165,7 @@ class ResultatIntentTest {
             ResultatIntent r4 = new ResultatIntent("PERRO", estats);
             ResultatIntent r5 = new ResultatIntent("PERRO", estats1);
 
-            assertNotEquals(r1, r2);
+            assertNotEquals(r4, r5);
 	}
 	
 	@Test

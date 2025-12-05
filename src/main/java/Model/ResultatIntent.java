@@ -16,6 +16,9 @@ public class ResultatIntent {
         if (estat == null) 
             throw new IllegalArgumentException("La llista d'estats no pot ser null.");
         
+        if (estat.size() != 5) 
+            throw new IllegalArgumentException("La llista d'estats ha de tenir 5 elements.");
+        
         this.paraulaIntent = intent;
         this.estatLletres = new ArrayList<>(estat);
     	
@@ -26,7 +29,7 @@ public class ResultatIntent {
     }
     
     public List<EstatLletra> getEstats() {
-        return estatLletres;
+        return Collections.unmodifiableList(estatLletres);
     }
     
     public boolean esCorrecte() {
