@@ -21,6 +21,11 @@ class ResultatIntentTest {
 		assertEquals("PERRO", r.getIntent());
 		assertEquals(estats, r.getEstats());
 		
+		// Modifiquem estats fora de la classe
+        estats.set(0, EstatLletra.INCORRECTA);
+        // El resultat guardat no hauria de canviar
+        assertEquals(EstatLletra.CORRECTA, r.getEstats().get(0));
+		
 		// paraula null
         assertThrows(IllegalArgumentException.class, () -> {
             new ResultatIntent(null, estats);
