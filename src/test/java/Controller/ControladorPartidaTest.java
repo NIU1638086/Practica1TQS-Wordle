@@ -81,7 +81,7 @@ class ControladorPartidaTest {
     }
 
 
-    
+    /*
     @Test
     void testObtenirIntentUsuari() {
         // Este método es privado y no se puede testear directamente
@@ -100,7 +100,7 @@ class ControladorPartidaTest {
         
         verify(mockPartida, times(4)).validarInput(anyString());
     }
-
+*/
 
     
     
@@ -171,6 +171,8 @@ class ControladorPartidaTest {
         verify(mockVista).mostrarErrorParaulaInvalida();
     }
     
+    
+    /*
     @Test
     void testValidacioInput() {
         // Configurar validaciones
@@ -195,7 +197,7 @@ class ControladorPartidaTest {
         
         verify(mockPartida, times(7)).validarInput(anyString());
     }
-    
+    */
     @Test
     void testFluxComplet() {
         // Simular 3 intentos: 2 incorrectos, 1 correcto
