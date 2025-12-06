@@ -3,44 +3,73 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Partida {
-
+	private ParaulaSecreta paraula;
+	private List<ResultatIntent> intents;
+	private Diccionari diccionari;
+	private int intentsRestants;
+	private static final int MAX_INTENTS = 6;
+	
     public Partida(ParaulaSecreta paraula, Diccionari dicc) {
+	    	if (paraula == null || dicc == null)
+	            throw new IllegalArgumentException("Arguments no poden ser null");
+	
+	        this.paraula = paraula;
+	        this.diccionari = dicc;
+	        this.intents = new ArrayList<>();
+	        this.intentsRestants = MAX_INTENTS;
     }
     
     public Partida(Diccionari dicc) {
+	    	if (dicc == null)
+	            throw new IllegalArgumentException("Diccionari no pot ser null");
+	
+	        this.diccionari = dicc;
+	        this.paraula = new ParaulaSecreta(dicc);
+	        this.intents = new ArrayList<>();
+	        this.intentsRestants = MAX_INTENTS;
     }
 
     public boolean validarInput(String intent) {
-    		return false;
+    		return intent != null && intent.length() == 5 && diccionari.existeix(intent);
     }
 
     public ResultatIntent afegirIntent(String intent) {
-	    	ResultatIntent r = new ResultatIntent(intent, null);
-	    	return r;
+	    	if (!validarInput(intent))
+	            throw new IllegalArgumentException("Intent no vàlid");
+	    	
+	    	List<EstatLletra> estats = paraula.comparar(intent);
+	    ResultatIntent res = new ResultatIntent(intent, estats);
+	    intents.add(res);
+	    if (intentsRestants > 0) 
+	    		intentsRestants--;
+	    
+	    return res;
     }
 
     public boolean isWon() {
-    		return false;
+	    	if (intents.isEmpty()) 
+	    		return false;
+	    	
+	    return intents.get(intents.size() - 1).esCorrecte();
     }
     
     public boolean isGameOver() {
-    		return false;
+    		return isWon() || intentsRestants <= 0;	
     }
 
     public List<ResultatIntent> getIntents() {
-    		List<ResultatIntent> l = new ArrayList<>();
-    		return l;
+    		return new ArrayList<>(intents);
     }
     
     public int getIntentsRestants() {
-    		return -1;
+    		return intentsRestants;
     }
     
     public String getParaulaSecreta() {
-    		return "h";
+    		return paraula.getParaula();
     }
     
     public int getMaxIntents() {
-    		return -1;
+    		return MAX_INTENTS;
     }
 }

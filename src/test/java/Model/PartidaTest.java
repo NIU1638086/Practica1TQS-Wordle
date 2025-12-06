@@ -25,6 +25,7 @@ class PartidaTest {
 		
 		when(mockParaulaSecreta.getParaula()).thenReturn("TESTS");
 		when(mockDiccionari.getRandomWord()).thenReturn("RANDM");
+		
 	}
 	
 	@Test
