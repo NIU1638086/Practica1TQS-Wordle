@@ -3,20 +3,33 @@ package Model;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import static org.mockito.Mockito.*;
 import java.util.Arrays;
 import java.util.List;
-
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.jupiter.params.provider.ValueSource;
 
 class PartidaTest {
 
 	private Partida partida;
 	private ParaulaSecreta mockParaulaSecreta;
 	private Diccionari mockDiccionari;
+	
+	private final List<EstatLletra> ESTATS_GUANYADORS = Arrays.asList(
+            EstatLletra.CORRECTA, 
+            EstatLletra.CORRECTA, 
+            EstatLletra.CORRECTA, 
+            EstatLletra.CORRECTA, 
+            EstatLletra.CORRECTA
+    );
+    
+    private final List<EstatLletra> ESTATS_FALLATS = Arrays.asList(
+            EstatLletra.INCORRECTA, 
+            EstatLletra.INCORRECTA, 
+            EstatLletra.INCORRECTA, 
+            EstatLletra.INCORRECTA, 
+            EstatLletra.INCORRECTA
+    );
 	
 	@BeforeEach
 	void setUp() {
@@ -26,16 +39,20 @@ class PartidaTest {
 		when(mockParaulaSecreta.getParaula()).thenReturn("TESTS");
 		when(mockDiccionari.getRandomWord()).thenReturn("RANDM");
 		
+		partida = new Partida(mockParaulaSecreta, mockDiccionari);
+		
 	}
 	
 	@Test
 	void testPartida() {
+		// estat inicial correcte
 		Partida p = new Partida(mockParaulaSecreta, mockDiccionari);
         assertNotNull(p);
         assertEquals(0, p.getIntents().size());
-        assertEquals(6, p.getIntentsRestants()); // Assumim 6 intents per defecte
+        assertEquals(6, p.getIntentsRestants());
         assertEquals("TESTS", p.getParaulaSecreta());
         
+        // valors nulls                                                                        
         assertThrows(IllegalArgumentException.class, () -> {
             new Partida(null, mockDiccionari);
         });
@@ -48,18 +65,20 @@ class PartidaTest {
 
 	@Test
 	void testPartidaDiccionari() {
+		// estat inicial correcte
 		Partida p = new Partida(mockDiccionari);
         assertNotNull(p);
-        assertNotNull(p.getParaulaSecreta()); // Ha d'haver creat una paraula
+        assertNotNull(p.getParaulaSecreta());
         assertEquals(0, p.getIntents().size());
-        // Verifiquem que ha cridat al diccionari per agafar una paraula random
         verify(mockDiccionari, atLeastOnce()).getRandomWord();
         
+     // valor null
         assertThrows(IllegalArgumentException.class, () -> {
             new Partida(null);
         });
 	}
-
+	
+	// test parametritzat per validar l'entrada de l'usuari
 	@ParameterizedTest(name = "Intent: ''{0}'' -> Hauria de ser vàlid: {1}")
 	@CsvSource({
 	    "TESTS, true",
@@ -70,26 +89,19 @@ class PartidaTest {
 	    "12345, false"
 	})
 	void testValidarInput(String intent, boolean esperat) {
-
-	    // Configurem el mock
+		// configurem el mock perquè només algunes paraules existeixin
 	    when(mockDiccionari.existeix("TESTS")).thenReturn(true);
 	    when(mockDiccionari.existeix("HELLO")).thenReturn(true);
 
 	    boolean resultat = partida.validarInput(intent);
-	    assertEquals(esperat, resultat, "Error validant l'input: " + intent);
+	    assertEquals(esperat, resultat);
 	}
 
 	@Test
 	void testAfegirIntent() {
 		// cas guanyador
         when(mockDiccionari.existeix("TESTS")).thenReturn(true);
-        List<EstatLletra> estatsGuanyadors = 
-        		List.of(EstatLletra.CORRECTA, 
-        				EstatLletra.CORRECTA, 
-        				EstatLletra.CORRECTA, 
-        				EstatLletra.CORRECTA, 
-        				EstatLletra.CORRECTA);
-        when(mockParaulaSecreta.comparar("TESTS")).thenReturn(estatsGuanyadors);
+        when(mockParaulaSecreta.comparar("TESTS")).thenReturn(ESTATS_GUANYADORS);
         when(mockParaulaSecreta.esIgual("TESTS")).thenReturn(true);
         ResultatIntent resultat = partida.afegirIntent("TESTS");
         assertNotNull(resultat);
@@ -98,19 +110,18 @@ class PartidaTest {
         assertTrue(partida.isGameOver());
         assertEquals(5, partida.getIntentsRestants());
         
+        setUp();
+        
         // cas perdedor
         when(mockDiccionari.existeix(anyString())).thenReturn(true);
         when(mockParaulaSecreta.esIgual(anyString())).thenReturn(false);
-        when(mockParaulaSecreta.comparar(anyString())).thenReturn(List.of(
-        		EstatLletra.INCORRECTA, 
-        		EstatLletra.INCORRECTA, 
-        		EstatLletra.INCORRECTA, 
-        		EstatLletra.INCORRECTA, 
-        		EstatLletra.INCORRECTA));
+        when(mockParaulaSecreta.comparar(anyString())).thenReturn(ESTATS_FALLATS);
+        
         for (int i = 0; i < 5; i++) {
             partida.afegirIntent("ERROR");
             assertFalse(partida.isGameOver());
         }
+        
         assertEquals(1, partida.getIntentsRestants());
         partida.afegirIntent("FINAL");
         assertEquals(0, partida.getIntentsRestants());
@@ -120,34 +131,20 @@ class PartidaTest {
 
 	@Test
 	void testIsWon() {
-		// 1. Encara ningú ha jugat → NO guanyat
+		
 	    assertFalse(partida.isWon());
 
-	    // 2. Simulem un intent incorrecte
+	    // intent fallit
         when(mockDiccionari.existeix("XXXXX")).thenReturn(true);
-        // Retornem algo que no sigui tot verd
-        List<EstatLletra> incorrecte = Arrays.asList(
-	            EstatLletra.CORRECTA, 
-	            EstatLletra.INCORRECTA, 
-	            EstatLletra.PRESENT, 
-	            EstatLletra.INCORRECTA, 
-	            EstatLletra.CORRECTA
-	    );
-        when(mockParaulaSecreta.comparar("XXXXX")).thenReturn(incorrecte);
+        when(mockParaulaSecreta.comparar("XXXXX")).thenReturn(ESTATS_FALLATS);
         when(mockParaulaSecreta.esIgual("XXXXX")).thenReturn(false);
 
 	    partida.afegirIntent("XXXXX");
 	    assertFalse(partida.isWon());
 
+	    // intent correcte
         when(mockDiccionari.existeix("TESTS")).thenReturn(true);
-	    List<EstatLletra> correcte = Arrays.asList(
-	            EstatLletra.CORRECTA, 
-	            EstatLletra.CORRECTA, 
-	            EstatLletra.CORRECTA, 
-	            EstatLletra.CORRECTA, 
-	            EstatLletra.CORRECTA
-	    );
-        when(mockParaulaSecreta.comparar("TESTS")).thenReturn(correcte);
+        when(mockParaulaSecreta.comparar("TESTS")).thenReturn(ESTATS_GUANYADORS);
         when(mockParaulaSecreta.esIgual("TESTS")).thenReturn(true); 
 
 	    partida.afegirIntent("TESTS");
@@ -156,56 +153,41 @@ class PartidaTest {
 
 	@Test
 	void testIsGameOver() {
-		// 1. No ha guanyat i encara queden intents
+		
 	    assertFalse(partida.isGameOver());
+	    
+	    // gameover per guanyar
+	    when(mockDiccionari.existeix("TESTS")).thenReturn(true);
+        when(mockParaulaSecreta.comparar("TESTS")).thenReturn(ESTATS_GUANYADORS);
+        when(mockParaulaSecreta.esIgual("TESTS")).thenReturn(true);
 
-	    // 2. Quan guanya → game over
-	    List<EstatLletra> correcte = Arrays.asList(
-	            EstatLletra.CORRECTA, 
-	            EstatLletra.CORRECTA,
-	            EstatLletra.CORRECTA,
-	            EstatLletra.CORRECTA, 
-	            EstatLletra.CORRECTA
-	    );
-
-	    when(mockParaulaSecreta.comparar("TESTS")).thenReturn(correcte);
-
-	    partida.afegirIntent("TESTS"); // Guanya
-
+	    partida.afegirIntent("TESTS");
 	    assertTrue(partida.isGameOver());
 
-	    // 3. Quan s'acaben els intents
-	    setUp(); // reset partida
+	    setUp();
 
+	    // gameover per intents = 0
 	    when(mockDiccionari.existeix(anyString())).thenReturn(true);
+        when(mockParaulaSecreta.comparar(anyString())).thenReturn(ESTATS_FALLATS);
+        when(mockParaulaSecreta.esIgual(anyString())).thenReturn(false);
 
-	    for (int i = 0; i < 6; i++) {
-	        // retornem incorrecte sempre
-	        when(mockParaulaSecreta.comparar(anyString()))
-	                .thenReturn(Arrays.asList(
-	                        EstatLletra.INCORRECTA, 
-	                        EstatLletra.INCORRECTA,
-	                        EstatLletra.INCORRECTA, 
-	                        EstatLletra.INCORRECTA,
-	                        EstatLletra.INCORRECTA
-	                ));
-	        partida.afegirIntent("XXXXX");
-	    }
+        for (int i = 0; i < 6; i++) {
+            partida.afegirIntent("XXXXX");
+        }
 
-	    assertTrue(partida.isGameOver());
+        assertTrue(partida.isGameOver());
 	}
 
 	@Test
-	void testGetIntents() {
+	void testGetIntents() {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
         when(mockDiccionari.existeix("TESTS")).thenReturn(true);
-        when(mockParaulaSecreta.comparar(anyString())).thenReturn(List.of());
+        when(mockParaulaSecreta.comparar(anyString())).thenReturn(ESTATS_FALLATS);
+        
         partida.afegirIntent("TESTS");
+        
         List<ResultatIntent> llista = partida.getIntents();
         assertEquals(1, llista.size());
-        try {
-            llista.clear(); 
-        } catch (UnsupportedOperationException e) { }
-        assertEquals(1, partida.getIntents().size());
+        assertThrows(UnsupportedOperationException.class, () -> llista.clear());
 	}
 
 	@Test
@@ -213,15 +195,7 @@ class PartidaTest {
 		assertEquals(6, partida.getIntentsRestants());
 
 	    when(mockDiccionari.existeix(anyString())).thenReturn(true);
-
-	    when(mockParaulaSecreta.comparar(anyString()))
-	            .thenReturn(Arrays.asList(
-	                    EstatLletra.INCORRECTA,
-	                    EstatLletra.INCORRECTA,
-	                    EstatLletra.INCORRECTA, 
-	                    EstatLletra.INCORRECTA,
-	                    EstatLletra.INCORRECTA
-	            ));
+	    when(mockParaulaSecreta.comparar(anyString())).thenReturn(ESTATS_FALLATS);
 
 	    partida.afegirIntent("XXXXX");
 	    assertEquals(5, partida.getIntentsRestants());

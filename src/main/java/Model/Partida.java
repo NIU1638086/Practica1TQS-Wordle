@@ -1,6 +1,8 @@
 package Model;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Collections;
+
 
 public class Partida {
 	private ParaulaSecreta paraula;
@@ -58,7 +60,7 @@ public class Partida {
     }
 
     public List<ResultatIntent> getIntents() {
-    		return new ArrayList<>(intents);
+    		return Collections.unmodifiableList(intents);
     }
     
     public int getIntentsRestants() {
