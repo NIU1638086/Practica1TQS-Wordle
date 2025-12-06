@@ -4,7 +4,7 @@ import java.util.List;
 
 public class Partida {
 
-    public Partida(ParaulaSecreta paraula) {
+    public Partida(ParaulaSecreta paraula, Diccionari dicc) {
     }
     
     public Partida(Diccionari dicc) {
