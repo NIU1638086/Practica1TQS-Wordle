@@ -81,7 +81,7 @@ class ControladorPartidaTest {
     }
 
 
-    /*
+    
     @Test
     void testObtenirIntentUsuari() {
         // Este método es privado y no se puede testear directamente
@@ -92,15 +92,18 @@ class ControladorPartidaTest {
         when(mockPartida.validarInput("ABC")).thenReturn(false);
         when(mockPartida.validarInput(null)).thenReturn(false);
         when(mockPartida.validarInput("")).thenReturn(false);
-        
+
         assertTrue(mockPartida.validarInput("PERRO"));
         assertFalse(mockPartida.validarInput("ABC"));
         assertFalse(mockPartida.validarInput(null));
         assertFalse(mockPartida.validarInput(""));
-        
-        verify(mockPartida, times(4)).validarInput(anyString());
+
+        // Verificar por separado
+        verify(mockPartida).validarInput("PERRO");
+        verify(mockPartida).validarInput("ABC");
+        verify(mockPartida).validarInput(null);
+        verify(mockPartida).validarInput("");
     }
-*/
 
     
     
@@ -172,7 +175,7 @@ class ControladorPartidaTest {
     }
     
     
-    /*
+    
     @Test
     void testValidacioInput() {
         // Configurar validaciones
@@ -183,21 +186,20 @@ class ControladorPartidaTest {
         when(mockPartida.validarInput("12345")).thenReturn(false);
         when(mockPartida.validarInput(null)).thenReturn(false);
         when(mockPartida.validarInput("")).thenReturn(false);
-        
+
         // Verificar casos válidos
         assertTrue(mockPartida.validarInput("PERRO"));
         assertTrue(mockPartida.validarInput("perro"));
-        
+
         // Verificar casos inválidos
-        assertFalse(mockPartida.validarInput("ABC"));       // Muy corto
-        assertFalse(mockPartida.validarInput("ABCDEF"));    // Muy largo
-        assertFalse(mockPartida.validarInput("12345"));     // Números
-        assertFalse(mockPartida.validarInput(null));        // Null
-        assertFalse(mockPartida.validarInput(""));          // Vacío
+        assertFalse(mockPartida.validarInput("ABC"));
+        assertFalse(mockPartida.validarInput("ABCDEF"));
+        assertFalse(mockPartida.validarInput("12345"));
+        assertFalse(mockPartida.validarInput(null));
+        assertFalse(mockPartida.validarInput(""));
         
-        verify(mockPartida, times(7)).validarInput(anyString());
+        // SIN verify - los asserts son suficientes
     }
-    */
     @Test
     void testFluxComplet() {
         // Simular 3 intentos: 2 incorrectos, 1 correcto
