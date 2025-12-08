@@ -10,41 +10,85 @@ public class Partida {
 	private Diccionari diccionari;
 	private int intentsRestants;
 	private static final int MAX_INTENTS = 6;
+
+	private boolean invariant() {
+        if (paraula == null) 
+        		return false;
+        
+        if (diccionari == null) 
+        		return false;
+        
+        if (intents == null) 
+        		return false;
+        
+        if (intentsRestants < 0 || intentsRestants > MAX_INTENTS) 
+        		return false;
+        
+        if (intents.size() + intentsRestants != MAX_INTENTS) 
+        		return false;
+
+        return true;
+    }
 	
     public Partida(ParaulaSecreta paraula, Diccionari dicc) {
+    		//PRECONDITION
 	    	if (paraula == null || dicc == null)
 	            throw new IllegalArgumentException("Arguments no poden ser null");
 	
-	        this.paraula = paraula;
-	        this.diccionari = dicc;
-	        this.intents = new ArrayList<>();
-	        this.intentsRestants = MAX_INTENTS;
+	    this.paraula = paraula;
+	    this.diccionari = dicc;
+	    this.intents = new ArrayList<>();
+	    this.intentsRestants = MAX_INTENTS;
+	    
+	    assert invariant();
     }
     
     public Partida(Diccionari dicc) {
+    		//PRECONDITION
 	    	if (dicc == null)
 	            throw new IllegalArgumentException("Diccionari no pot ser null");
 	
-	        this.diccionari = dicc;
-	        this.paraula = new ParaulaSecreta(dicc);
-	        this.intents = new ArrayList<>();
-	        this.intentsRestants = MAX_INTENTS;
+	    this.diccionari = dicc;
+	    this.paraula = new ParaulaSecreta(dicc);
+	    this.intents = new ArrayList<>();
+	    this.intentsRestants = MAX_INTENTS;
+	    
+	    assert invariant();
     }
 
     public boolean validarInput(String intent) {
+    		assert invariant();
     		return intent != null && intent.length() == 5 && diccionari.existeix(intent);
     }
 
     public ResultatIntent afegirIntent(String intent) {
+    		assert invariant();
+    		
+    		//PRECONDITION
+    		assert !isGameOver();
+    		assert validarInput(intent);
+    		
+    		
 	    	if (!validarInput(intent))
 	            throw new IllegalArgumentException("Intent no vàlid");
 	    	
-	    	List<EstatLletra> estats = paraula.comparar(intent);
-	    ResultatIntent res = new ResultatIntent(intent, estats);
-	    intents.add(res);
-	    if (intentsRestants > 0) 
-	    		intentsRestants--;
+	    	int intentsAbans = intents.size();
+	    int restantsAbans = intentsRestants;
+	    	
+	    List<EstatLletra> estats = paraula.comparar(intent);
+        ResultatIntent res = new ResultatIntent(intent, estats);
+        intents.add(res);
+        
+        if (intentsRestants > 0) 
+            intentsRestants--;
 	    
+	    //POSTCONDITION
+        assert intents.size() == intentsAbans + 1;
+        assert intentsRestants == restantsAbans - 1;
+        assert res != null;
+        
+        assert invariant();
+        
 	    return res;
     }
 
