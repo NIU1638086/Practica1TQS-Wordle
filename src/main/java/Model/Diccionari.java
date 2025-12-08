@@ -11,7 +11,21 @@ import java.io.IOException;
 public class Diccionari {
     private List<String> paraules;
     
+    private boolean invariant() {
+        if (paraules == null) 
+        		return false;
+        
+        if (paraules.isEmpty()) 
+        		return false;
+        
+        return true;
+    }
+    
     public Diccionari(String nomFitxer) {
+    		//PRECONDITION
+        assert nomFitxer != null;
+        assert !nomFitxer.trim().isEmpty();
+        
     		this.paraules = carregarParaulesDeRecursos(nomFitxer);
         
         if (this.paraules.isEmpty()) {
@@ -19,6 +33,12 @@ public class Diccionari {
         }
         
         System.out.println("S'han carregat " + this.paraules.size() + " paraules del diccionari.");
+        
+        //POSTCONDITION
+        assert this.paraules != null;
+        assert !this.paraules.isEmpty();
+        
+        assert invariant();
     }
     
     private List<String> carregarParaulesDeRecursos(String nomFitxer) {
@@ -47,22 +67,50 @@ public class Diccionari {
             System.err.println("Error inesperat: " + e.getMessage());
         }
         
+        assert paraulesCarregades != null;
+        
         return paraulesCarregades;
     }
 
     public boolean existeix(String paraula) {
-        if (paraula == null || paraula.length() != 5) {
+    		assert invariant();
+    		
+    		//PRECONDITION
+        // la funcio ja gestiona nulls tornant false
+    	
+        if (paraula == null || paraula.length() != 5)
             return false;
-        }
+        
+        //POSTCONDITION
+        // No hi ha canvi d'estat
+        
+        assert invariant();
+        
         return paraules.contains(paraula.toUpperCase());
     }
 
     public String getRandomWord() {
-        if (paraules.isEmpty()) {
+    		assert invariant();	
+    		
+    		//PRECONDITION
+        assert !paraules.isEmpty();
+    		
+        if (paraules.isEmpty())
             throw new IllegalStateException("El diccionari està buit");
-        }
+        
         Random rand = new Random();
-        return paraules.get(rand.nextInt(paraules.size()));
+        
+        String resultat = paraules.get(rand.nextInt(paraules.size()));
+        
+        //POSTCONDITION
+        assert resultat != null;
+        assert resultat.length() == 5;
+        assert paraules.contains(resultat);
+        assert rand != null;
+        
+        assert invariant();
+        
+        return resultat;
     }
     
     public List<String> getParaules() {
